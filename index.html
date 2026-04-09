@@ -1,0 +1,4195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Voice - Student Concerns Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #006633;
+            --primary-dark: #004d26;
+            --secondary: #339966;
+            --accent: #b3ddc0;
+            --bg: #f4fbf6;
+            --surface: #FFFFFF;
+            --text: #1a2e22;
+            --text-light: #5a7a65;
+            --success: #2e9e52;
+            --border: #d4e9dc;
+            --pending: #F59E0B;
+            --in-progress: #3B82F6;
+            --resolved: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Background Blobs */
+        .bg-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .blob1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            top: -100px;
+            left: -100px;
+        }
+
+        .blob2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        .blob3 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent);
+            top: 50%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-fadeInDown { animation: fadeInDown 0.8s ease-out; }
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out backwards; }
+        .animate-fadeIn { animation: fadeIn 1s ease-out backwards; }
+        .animate-pulse-slow { animation: pulse 2s infinite; }
+
+        /* Typography */
+        .font-heading { font-family: 'Fraunces', serif; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        /* Card Shadows */
+        .card-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .form-shadow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styles */
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .category-card {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* ===== CATEGORY CARD TOOLTIPS ===== */
+        .category-card {
+            position: relative;
+        }
+
+        .category-tooltip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.85);
+            background: #1e2d3d;
+            color: white;
+            padding: 0.65rem 1rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 200;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            line-height: 1.5;
+            text-align: center;
+            max-width: 200px;
+            white-space: normal;
+        }
+
+        .category-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #1e2d3d;
+        }
+
+        .category-card:hover .category-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1) translateY(-4px);
+        }
+
+        /* ===== INFO NAV BUTTON TOOLTIPS ===== */
+        .info-nav-btn {
+            position: relative;
+        }
+
+        .nav-tooltip {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.85);
+            background: #1e2d3d;
+            color: white;
+            padding: 0.6rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: 400;
+            white-space: normal;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            min-width: 160px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .nav-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #1e2d3d;
+        }
+
+        .info-nav-btn:hover .nav-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1) translateY(4px);
+        }
+
+        .category-card.selected {
+            border-color: var(--primary);
+        }
+
+        .category-card input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .check-mark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+
+        .category-card.selected .check-mark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Toggle Switch */
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: var(--secondary);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(28px);
+        }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 102, 51, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: var(--primary);
+            margin-left: 4px;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Admin Login Button */
+        .admin-login-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 9999px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-login-btn:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: scaleIn 0.3s ease;
+        }
+
+        .modal-content h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .modal-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Admin Dashboard Styles */
+        .dashboard-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dashboard-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-value {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-card.total .stat-value { color: var(--text); }
+        .stat-card.pending .stat-value { color: var(--pending); }
+        .stat-card.in-progress .stat-value { color: var(--in-progress); }
+        .stat-card.resolved .stat-value { color: var(--resolved); }
+
+        /* Complaint List */
+        .complaints-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .complaints-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .complaints-list {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-bar input {
+            flex: 1;
+        }
+
+        .filter-bar select {
+            width: 150px;
+        }
+
+        .complaint-item {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .complaint-item:hover {
+            border-color: var(--primary);
+        }
+
+        .complaint-item.selected {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .complaint-title {
+            font-weight: 600;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-badge.in-progress {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .status-badge.resolved {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .complaint-preview {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .complaint-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .detail-panel h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-section p {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .status-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .status-btn {
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .status-btn.pending {
+            background: var(--bg);
+            color: var(--text-light);
+        }
+
+        .status-btn.pending.active {
+            background: #FEF3C7;
+            color: #92400E;
+            border-color: #F59E0B;
+        }
+
+        .status-btn.in-progress {
+            background: var(--bg);
+            color: var(--text-light);
+        }
+
+        .status-btn.in-progress.active {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border-color: #3B82F6;
+        }
+
+        .status-btn.resolved {
+            background: var(--bg);
+            color: var(--text-light);
+        }
+
+        .status-btn.resolved.active {
+            background: #D1FAE5;
+            color: #065F46;
+            border-color: #10B981;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header .logo-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .login-header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+        }
+
+        .error-message {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #DC2626;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-credentials {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .demo-credentials code {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .filter-bar select {
+                width: 100%;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+
+        /* ==================== COVER PAGE (Option 3) ==================== */
+        #splashPage {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* top hero band */
+        .cover-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 70%, #002a14 100%);
+            padding: clamp(3rem, 6vw, 6rem) 2rem clamp(3.5rem, 7vw, 7rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            text-align: center;
+            position: relative;
+            overflow: visible;
+        }
+
+        .cover-hero-blobs {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .cover-hero .splash-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 18s infinite ease-in-out;
+        }
+        .cover-hero .splash-blob1 { width: 450px; height: 450px; background: #339966; top: -150px; left: -150px; }
+        .cover-hero .splash-blob2 { width: 350px; height: 350px; background: #b3ddc0; bottom: -100px; right: -100px; animation-delay: -7s; }
+
+        .cover-hero-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .cover-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+        }
+
+        .cover-uc-logo {
+            width: 88px;
+            height: 88px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.92;
+            margin-bottom: 0.25rem;
+            drop-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .cover-hero-divider {
+            width: 40px;
+            height: 2px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 100px;
+            margin: 0.25rem 0;
+        }
+
+        .cover-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.2rem, 6vw, 3.2rem);
+            font-weight: 700;
+            color: white;
+            line-height: 1.1;
+            letter-spacing: -0.3px;
+        }
+
+        .cover-school-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.55);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .cover-tagline {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.78);
+            max-width: 360px;
+            line-height: 1.7;
+            margin-top: 0.25rem;
+        }
+
+        /* stats bar */
+        .cover-stats {
+            display: flex;
+            gap: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.7s ease-out 0.2s both;
+        }
+
+        .cover-stat {
+            flex: 1;
+            padding: 1.1rem 0.5rem;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+        .cover-stat:last-child { border-right: none; }
+
+        .cover-stat-value {
+            font-family: 'Fraunces', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .cover-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+            line-height: 1.3;
+        }
+
+        /* body section */
+        .cover-body {
+            padding: 2rem 1.5rem;
+            max-width: 680px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeInUp 0.7s ease-out 0.35s both;
+        }
+
+        .cover-section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* How it works steps */
+        .cover-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .cover-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .cover-step:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .cover-step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .cover-step-text strong {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text);
+            margin-bottom: 0.2rem;
+        }
+
+        .cover-step-text span {
+            font-size: 0.83rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* trust badges */
+        .cover-badges {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 480px) {
+            .cover-badges { grid-template-columns: 1fr; }
+        }
+
+        .cover-badge {
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .cover-badge-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
+        .cover-badge strong { display: block; font-size: 0.85rem; color: var(--text); margin-bottom: 0.2rem; }
+        .cover-badge span { font-size: 0.75rem; color: var(--text-light); line-height: 1.4; }
+
+        /* CTA */
+        .cover-cta-wrap {
+            padding: 0 1.5rem 2.5rem;
+            max-width: 680px;
+            margin: 0 auto;
+            width: 100%;
+            animation: fadeInUp 0.7s ease-out 0.5s both;
+        }
+
+        .cover-cta-btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,102,51,0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .cover-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,102,51,0.45);
+        }
+
+        .cover-cta-note {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-top: 0.75rem;
+        }
+
+        /* exit */
+        @keyframes splashExit {
+            from { opacity: 1; transform: scale(1); }
+            to   { opacity: 0; transform: scale(1.03); }
+        }
+        #splashPage.exiting {
+            animation: splashExit 0.4s ease-in forwards;
+            pointer-events: none;
+        }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-4 { margin-top: 1rem; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+        .w-full { width: 100%; }
+
+        /* ===== CAMPUS INFO PAGE ===== */
+        .info-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            background: white;
+            border-radius: 20px;
+            padding: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 1rem;
+            z-index: 50;
+        }
+
+        .info-nav-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-light);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        .info-nav-btn:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .info-nav-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+        }
+
+        .info-section {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .info-section.active {
+            display: block;
+        }
+
+        .info-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 28px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .info-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: 20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 50%;
+        }
+
+        .info-hero h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-hero .hero-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .info-card.accent-red { border-left-color: var(--primary); }
+        .info-card.accent-teal { border-left-color: var(--secondary); }
+        .info-card.accent-yellow { border-left-color: #F59E0B; }
+        .info-card.accent-blue { border-left-color: #3B82F6; }
+        .info-card.accent-green { border-left-color: #10B981; }
+        .info-card.accent-purple { border-left-color: #8B5CF6; }
+
+        .info-card .card-icon {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+        }
+
+        .info-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        .info-card ul {
+            list-style: none;
+            margin-top: 0.75rem;
+        }
+
+        .info-card ul li {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .info-card ul li::before {
+            content: '→';
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 0.05rem;
+        }
+
+        .wide-card {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            padding: 2.5rem;
+        }
+
+        .wide-card .text-side h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (max-width: 640px) {
+            .wide-card {
+                grid-template-columns: 1fr;
+            }
+            .info-hero h2 { font-size: 1.75rem; }
+            .info-nav-btn { min-width: 80px; font-size: 0.75rem; }
+            #statsContainer { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+
+        .contact-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+
+        .contact-table th {
+            background: var(--bg);
+            color: var(--text-light);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .contact-table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .contact-table tr:last-child td { border-bottom: none; }
+
+        .contact-table tr:hover td { background: var(--bg); }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(255,107,107,0.08), rgba(78,205,196,0.08));
+            border: 1px solid rgba(255,107,107,0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .highlight-box h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .stat-highlight {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-highlight-item {
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .stat-highlight-item .num {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-highlight-item .label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .campus-info-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 9999px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .campus-info-btn:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ===== SIDEBAR ADVERTISEMENTS ===== */
+        .ad-sidebar {
+            width: 180px;
+            flex-shrink: 0;
+            padding: 1.5rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            align-items: center;
+        }
+
+        .ad-sidebar::-webkit-scrollbar { display: none; }
+
+        .ad-sidebar-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            opacity: 0.7;
+            text-align: center;
+            padding: 0.25rem 0;
+        }
+
+        .sidebar-ad-card {
+            width: 160px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.5s ease-out backwards;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sidebar-ad-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.16);
+        }
+
+        .sidebar-ad-img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sidebar-ad-img-placeholder {
+            width: 100%;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .sidebar-ad-body {
+            padding: 0.75rem;
+            color: white;
+        }
+
+        .sidebar-ad-body .ad-tag {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: rgba(255,255,255,0.2);
+            padding: 0.15rem 0.45rem;
+            border-radius: 100px;
+            display: inline-block;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-ad-body h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            margin-bottom: 0.3rem;
+        }
+
+        .sidebar-ad-body p {
+            font-size: 0.7rem;
+            opacity: 0.85;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-ad-body .ad-cta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.6rem;
+            border-radius: 100px;
+            display: inline-block;
+            transition: background 0.2s, transform 0.15s;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .sidebar-ad-body .ad-cta:hover { background: rgba(255,255,255,0.35); }
+
+        .sidebar-ad-dismiss {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.35);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.65rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            z-index: 5;
+        }
+
+        .sidebar-ad-dismiss:hover { background: rgba(0,0,0,0.6); }
+
+        /* ===== AD EXPAND MODAL ===== */
+        .ad-expand-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.25s ease;
+        }
+
+        .ad-expand-modal.show { display: flex; }
+
+        .ad-expand-card {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+            animation: scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            position: relative;
+        }
+
+        .ad-expand-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ad-expand-img-placeholder {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .ad-expand-body {
+            padding: 2rem;
+            color: white;
+        }
+
+        .ad-expand-body .ad-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .ad-expand-body h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.75rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        .ad-expand-body p {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.65;
+            margin-bottom: 1.5rem;
+        }
+
+        .ad-expand-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            background: rgba(0,0,0,0.4);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+
+        .ad-expand-close:hover { background: rgba(0,0,0,0.65); }
+
+        .ad-expand-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.25);
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .ad-expand-cta:hover {
+            background: rgba(255,255,255,0.38);
+            transform: translateY(-2px);
+        }
+
+        /* ===== INFO PAGES (About, Privacy, FAQ, Contact) ===== */
+        .info-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1500;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.25s ease;
+        }
+
+        .info-modal.show { display: flex; }
+
+        .info-modal-box {
+            background: var(--surface);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: scaleIn 0.3s ease;
+            scrollbar-width: thin;
+        }
+
+        .info-modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            border-radius: 28px 28px 0 0;
+        }
+
+        .info-modal-header h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        .info-modal-header p {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .info-modal-close {
+            width: 36px; height: 36px;
+            background: var(--bg);
+            border: none;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+            color: var(--text);
+        }
+
+        .info-modal-close:hover { background: var(--border); }
+
+        .info-modal-body {
+            padding: 1.75rem 2rem 2rem;
+        }
+
+        .info-modal-body h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.05rem;
+            color: var(--text);
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .info-modal-body h3:first-child { margin-top: 0; }
+
+        .info-modal-body p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-modal-body ul {
+            list-style: none;
+            margin: 0.5rem 0 0.75rem;
+        }
+
+        .info-modal-body ul li {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            padding: 0.3rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .info-modal-body ul li::before {
+            content: '→';
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .info-modal-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .contact-item {
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 1rem;
+        }
+
+        .contact-item .ci-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-item .ci-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .faq-q {
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            transition: background 0.2s;
+            color: var(--text);
+        }
+
+        .faq-q:hover { background: var(--bg); }
+
+        .faq-q .faq-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            color: var(--primary);
+        }
+
+        .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.3s ease;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            padding: 0 1.25rem;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 300px;
+            padding: 0 1.25rem 1rem;
+        }
+
+        @media (max-width: 1100px) {
+            .ad-sidebar { width: 140px; }
+            .sidebar-ad-card { width: 126px; }
+            .sidebar-ad-img, .sidebar-ad-img-placeholder { height: 90px; }
+        }
+
+        @media (max-width: 860px) {
+            .ad-sidebar { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* ===== AD CAPTCHA MODAL ===== */
+        .ad-captcha-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ad-captcha-modal.show { display: flex; }
+
+        .ad-captcha-card {
+            background: var(--surface);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+            animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        .ad-captcha-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 28px 28px 0 0;
+            text-align: center;
+        }
+
+        .ad-captcha-header h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ad-captcha-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .ad-captcha-content {
+            padding: 1.5rem 2rem;
+        }
+
+        .ad-captcha-ad {
+            background: linear-gradient(135deg, #006633, #004d26);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .ad-captcha-ad-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ad-captcha-ad-body {
+            padding: 1.25rem;
+            color: white;
+        }
+
+        .ad-captcha-ad-body h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ad-captcha-ad-body p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .ad-captcha-timer {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .ad-captcha-timer .timer-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .ad-captcha-timer .timer-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .ad-captcha-timer .timer-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 100px;
+            transition: width 0.1s linear;
+        }
+
+        .ad-captcha-timer .timer-seconds {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 0.5rem;
+        }
+
+        .ad-captcha-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .ad-captcha-actions button {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-skip-ad {
+            background: var(--bg);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .btn-skip-ad:enabled {
+            background: var(--secondary);
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-skip-ad:enabled:hover {
+            background: #1e7a47;
+            transform: translateY(-2px);
+        }
+
+        .btn-continue-ad {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-continue-ad:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.4);
+        }
+
+        /* ===== EMAIL UPDATES TOGGLE ===== */
+        .email-updates-section {
+            background: linear-gradient(135deg, rgba(78,205,196,0.08), rgba(78,205,196,0.04));
+            border: 2px solid rgba(78,205,196,0.3);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .email-updates-section.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .email-updates-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0;
+        }
+
+        .email-updates-header.has-email {
+            margin-bottom: 1rem;
+        }
+
+        .email-updates-info {
+            flex: 1;
+        }
+
+        .email-updates-info strong {
+            display: block;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .email-updates-info small {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .email-input-wrapper {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .email-input-wrapper.show {
+            display: block;
+        }
+
+        .email-input-wrapper input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        .email-input-wrapper input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(78,205,196,0.15);
+        }
+
+        .email-input-wrapper .email-hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* ===== ADMIN ADS MANAGEMENT ===== */
+        .ads-admin-section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .ads-admin-section h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ads-admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 640px) { .ads-admin-grid { grid-template-columns: 1fr; } }
+
+        .ads-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: background 0.2s ease;
+        }
+
+        .ads-list-item:hover { background: var(--bg); }
+
+        .ads-list-item .ad-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .ads-list-item .ad-thumb-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .ads-list-item .ad-info { flex: 1; }
+        .ads-list-item .ad-info strong { display: block; font-size: 0.9rem; }
+        .ads-list-item .ad-info span { font-size: 0.78rem; color: var(--text-light); }
+        .ads-list-item .ad-actions { display: flex; gap: 0.5rem; }
+
+        .btn-icon {
+            width: 32px; height: 32px;
+            border: none; border-radius: 8px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-icon.edit { background: #EFF6FF; color: #3B82F6; }
+        .btn-icon.edit:hover { background: #DBEAFE; }
+        .btn-icon.delete { background: #FEF2F2; color: #EF4444; }
+        .btn-icon.delete:hover { background: #FECACA; }
+
+        .color-picker-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .color-swatch {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.selected { border-color: var(--text); }
+
+        /* image upload area */
+        .img-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .img-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(255,107,107,0.04);
+        }
+
+        .img-upload-area.has-image {
+            border-color: var(--secondary);
+            padding: 0;
+        }
+
+        .img-upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .img-upload-preview {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .img-upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-light);
+            pointer-events: none;
+        }
+
+        .img-upload-placeholder span { font-size: 2rem; }
+        .img-upload-placeholder p { font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <!-- Background Blobs -->
+    <div class="bg-decoration">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+    </div>
+
+    <!-- ========== COVER PAGE (Option 3 — Onboarding) ========== -->
+    <div id="splashPage">
+
+        <!-- Hero Band -->
+        <div class="cover-hero">
+        <div class="cover-hero-blobs">
+            <div class="splash-blob splash-blob1"></div>
+            <div class="splash-blob splash-blob2"></div>
+        </div>
+            <div class="cover-hero-inner">
+                <img class="cover-uc-logo"
+                    src="https://uc-bcf.edu.ph/assets/images/uc_seal.png"
+                    alt="UC Logo"
+                    onerror="this.style.display='none';">
+                <div class="cover-school-name">University of the Cordilleras</div>
+                <div class="cover-hero-divider"></div>
+                <div class="cover-title">Campus Voice</div>
+                <p class="cover-tagline">Your concerns matter. A student-led platform for raising issues and driving real change at UC, Baguio City.</p>
+            </div>
+        </div>
+
+        <!-- Live Stats Bar -->
+        <div class="cover-stats" id="coverStatsBar">
+            <div class="cover-stat">
+                <div class="cover-stat-value" id="coverStatTotal">0</div>
+                <div class="cover-stat-label">Concerns<br>Submitted</div>
+            </div>
+            <div class="cover-stat">
+                <div class="cover-stat-value" id="coverStatResolved">0</div>
+                <div class="cover-stat-label">Issues<br>Resolved</div>
+            </div>
+            <div class="cover-stat">
+                <div class="cover-stat-value" id="coverStatRate">0%</div>
+                <div class="cover-stat-label">Resolution<br>Rate</div>
+            </div>
+            <div class="cover-stat">
+                <div class="cover-stat-value">24h</div>
+                <div class="cover-stat-label">Avg Response<br>Time</div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="cover-body">
+
+            <!-- How It Works -->
+            <div>
+                <div class="cover-section-title">📋 How It Works</div>
+                <div class="cover-steps">
+                    <div class="cover-step">
+                        <div class="cover-step-num">1</div>
+                        <div class="cover-step-text">
+                            <strong>Pick a Category</strong>
+                            <span>Choose what your concern is about — Facilities, Academics, Safety, Admin, Student Life, or Other. You can select multiple!</span>
+                        </div>
+                    </div>
+                    <div class="cover-step">
+                        <div class="cover-step-num">2</div>
+                        <div class="cover-step-text">
+                            <strong>Describe Your Concern</strong>
+                            <span>Give your concern a title and write a clear description (up to 200 words). Attach photos or files if needed.</span>
+                        </div>
+                    </div>
+                    <div class="cover-step">
+                        <div class="cover-step-num">3</div>
+                        <div class="cover-step-text">
+                            <strong>Choose How to Submit</strong>
+                            <span>Submit anonymously to stay untraceable, or include your name and student ID. Toggle email updates to get notified when your concern is resolved.</span>
+                        </div>
+                    </div>
+                    <div class="cover-step">
+                        <div class="cover-step-num">4</div>
+                        <div class="cover-step-text">
+                            <strong>We Take It From There</strong>
+                            <span>Our student moderation team reviews every submission within 24 hours and forwards it to the right department. Status updates: Pending → In Progress → Resolved.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Badges -->
+            <div>
+                <div class="cover-section-title">✅ Why You Can Trust Us</div>
+                <div class="cover-badges">
+                    <div class="cover-badge">
+                        <div class="cover-badge-icon">🔒</div>
+                        <strong>Confidential</strong>
+                        <span>Anonymous submissions are completely untraceable — not even moderators can identify you.</span>
+                    </div>
+                    <div class="cover-badge">
+                        <div class="cover-badge-icon">👥</div>
+                        <strong>Student-Led</strong>
+                        <span>Managed by fellow UC students who genuinely care about making campus better.</span>
+                    </div>
+                    <div class="cover-badge">
+                        <div class="cover-badge-icon">⚡</div>
+                        <strong>Fast Response</strong>
+                        <span>Every concern is reviewed within 24 hours and routed to the right office immediately.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CTA -->
+        <div class="cover-cta-wrap">
+            <button class="cover-cta-btn" onclick="enterSite()">Submit a Concern →</button>
+            <p class="cover-cta-note">🔒 Your submission is safe and secure · Compliant with RA 10173 (Data Privacy Act)</p>
+        </div>
+
+    </div>
+
+    <!-- Admin Login Button (shown on main page) -->
+    <a href="#" class="admin-login-btn" id="adminLoginBtn" onclick="showLoginPage(); return false;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" x2="3" y1="12" y2="12"/>
+        </svg>
+        Admin Login
+    </a>
+
+    <!-- Main Page -->
+    <div id="mainPage" class="page">
+        <!-- Sidebar Ads Layout -->
+        <div id="mainPageWrapper" style="display:flex; min-height:100vh; position:relative; z-index:1;">
+            <!-- Left Ad Sidebar -->
+            <div id="leftAdSidebar" class="ad-sidebar ad-sidebar-left"></div>
+
+            <!-- Center Content -->
+            <div class="container" style="flex:1; min-width:0;">
+            <!-- Header -->
+            <header class="text-center py-12 animate-fadeInDown">
+                <div class="inline-flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 logo-icon-gradient rounded-xl flex items-center justify-center text-2xl animate-pulse-slow">
+                        🎓
+                    </div>
+                </div>
+                <h1 class="font-heading text-5xl md:text-6xl font-bold gradient-text mb-2">
+                    Campus Voice
+                </h1>
+                <p class="text-xl text-[var(--text-light)] font-medium">
+                    Your concerns matter. Let's make campus better together.
+                </p>
+            </header>
+
+            <!-- Stats -->
+            <div id="statsContainer" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1.5rem; margin:3rem 0; width:100%;">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+
+            <!-- Form Section -->
+            <div class="bg-white rounded-3xl p-8 md:p-12 form-shadow my-8 animate-fadeInUp" style="animation-delay: 0.4s">
+                <div class="mb-8">
+                    <h2 class="font-heading text-2xl md:text-3xl font-bold text-[var(--text)] mb-2">
+                        Submit Your Concern
+                    </h2>
+                    <p class="text-[var(--text-light)]">
+                        Fill out the form below and our student-led team will review your submission within 24 hours.
+                    </p>
+                </div>
+
+                <form id="concernForm">
+                    <!-- Category Selection -->
+                    <div class="mb-8">
+                        <label>What category does your concern fall under?<span class="required">*</span> <span style="font-weight:400; font-size:0.85rem; color:var(--text-light);">Select all that apply</span></label>
+                        <div class="category-grid">
+                            <label class="category-card" onclick="toggleCategory('facilities', '🏢', this)">
+                                <input type="checkbox" name="category" value="facilities">
+                                <div class="category-icon">🏢</div>
+                                <div>Facilities</div>
+                                <div class="check-mark">✓</div>
+                                <div class="category-tooltip">Buildings, classrooms, labs, restrooms, equipment & maintenance issues</div>
+                            </label>
+                            <label class="category-card" onclick="toggleCategory('academics', '📚', this)">
+                                <input type="checkbox" name="category" value="academics">
+                                <div class="category-icon">📚</div>
+                                <div>Academics</div>
+                                <div class="check-mark">✓</div>
+                                <div class="category-tooltip">Grading, curriculum, professor conduct, course availability & scheduling</div>
+                            </label>
+                            <label class="category-card" onclick="toggleCategory('student-life', '🎭', this)">
+                                <input type="checkbox" name="category" value="student-life">
+                                <div class="category-icon">🎭</div>
+                                <div>Student Life</div>
+                                <div class="check-mark">✓</div>
+                                <div class="category-tooltip">Clubs, events, mental health, campus culture & student activities</div>
+                            </label>
+                            <label class="category-card" onclick="toggleCategory('safety', '🛡️', this)">
+                                <input type="checkbox" name="category" value="safety">
+                                <div class="category-icon">🛡️</div>
+                                <div>Safety</div>
+                                <div class="check-mark">✓</div>
+                                <div class="category-tooltip">Harassment, hazards, emergency concerns, bullying & campus security</div>
+                            </label>
+                            <label class="category-card" onclick="toggleCategory('admin', '⚙️', this)">
+                                <input type="checkbox" name="category" value="admin">
+                                <div class="category-icon">⚙️</div>
+                                <div>Administration</div>
+                                <div class="check-mark">✓</div>
+                                <div class="category-tooltip">Office delays, billing issues, document processing & admin staff conduct</div>
+                            </label>
+                            <label class="category-card" onclick="toggleCategory('other', '💬', this)">
+                                <input type="checkbox" name="category" value="other">
+                                <div class="category-icon">💬</div>
+                                <div>Other</div>
+                                <div class="check-mark">✓</div>
+                                <div class="category-tooltip">Anything that doesn't fit the other categories — we'll route it correctly</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="title">Brief Title<span class="required">*</span></label>
+                        <input type="text" id="title" class="form-input" placeholder="E.g., Broken AC in Library 2nd Floor" required>
+                    </div>
+
+                    <!-- Description + Attachments -->
+                    <div class="form-group">
+                        <label for="description">Detailed Description<span class="required">*</span></label>
+                        <textarea id="description" class="form-input" placeholder="Please provide as much detail as possible about your concern..." required oninput="updateCharCount()" style="border-radius:14px 14px 0 0; border-bottom:1px solid var(--border); margin-bottom:0;"></textarea>
+                        <!-- Attachment zone stitched below the textarea -->
+                        <div style="border:2px solid var(--border); border-top:none; border-radius:0 0 14px 14px; background:var(--bg); padding:0.75rem 1rem; display:flex; flex-direction:column; gap:0.5rem;">
+                            <div id="attachDropZone" style="border:1.5px dashed var(--border); border-radius:10px; padding:0.7rem 1rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer; transition:border-color 0.3s, background 0.3s;"
+                                onclick="document.getElementById('attachInput').click()"
+                                ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(0,102,51,0.04)';"
+                                ondragleave="this.style.borderColor='var(--border)'; this.style.background='';"
+                                ondrop="handleAttachDrop(event)">
+                                <input type="file" id="attachInput" multiple accept="image/*,.pdf,.doc,.docx" style="display:none;" onchange="handleAttachSelect(this.files)">
+                                <span style="font-size:1.3rem; pointer-events:none;">📎</span>
+                                <div style="pointer-events:none;">
+                                    <p style="font-size:0.8rem; font-weight:500; color:var(--text); margin:0;">Attach files or photos</p>
+                                    <p style="font-size:0.72rem; color:var(--text-light); margin:0;">Images, PDF, DOC · max 5MB · up to 5 files</p>
+                                </div>
+                            </div>
+                            <div id="attachPreviewList" style="display:flex; flex-direction:column; gap:0.4rem;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.4rem;">
+                            <small style="color:var(--text-light); font-size:0.78rem;">Keep it concise — max 200 words.</small>
+                            <small id="charCount" style="font-size:0.78rem; font-weight:600; color:var(--text-light);">0 / 200 words</small>
+                        </div>
+                    </div>
+
+                    <!-- Date of Incident -->
+                    <div class="form-group">
+                        <label for="incidentDate">Date of Incident<span class="required">*</span></label>
+                        <input type="date" id="incidentDate" class="form-input" required>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="location">Location (if applicable)</label>
+                        <input type="text" id="location" class="form-input" placeholder="E.g., Engineering Building, Room 301">
+                    </div>
+
+                    <!-- Anonymous Toggle -->
+                    <div class="toggle-wrapper">
+                        <div class="toggle-switch" id="anonymousToggle" onclick="toggleAnonymous()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <div>
+                            <strong>Submit Anonymously</strong>
+                            <small style="display: block; color: var(--text-light); font-size: 0.85rem;">Your identity will be kept confidential from everyone except moderators</small>
+                        </div>
+                    </div>
+
+                    <!-- Email Updates Toggle -->
+                    <div class="email-updates-section" id="emailUpdatesSection">
+                        <div class="email-updates-header" id="emailUpdatesHeader">
+                            <div class="toggle-switch" id="emailUpdatesToggle" onclick="toggleEmailUpdates()">
+                                <div class="toggle-slider"></div>
+                            </div>
+                            <div class="email-updates-info">
+                                <strong>📧 Receive Status Updates</strong>
+                                <small>Get notified when your concern status changes</small>
+                            </div>
+                        </div>
+                        <div class="email-input-wrapper" id="emailUpdatesInputWrapper">
+                            <input type="email" id="updateEmail" class="form-input" placeholder="Enter your email for updates">
+                            <p class="email-hint">We'll send updates to this email when your concern status changes</p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Fields -->
+                    <div id="contactFields">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Your Name<span class="required">*</span></label>
+                                <input type="text" id="name" class="form-input" placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="studentId">Student ID<span class="required">*</span></label>
+                                <input type="text" id="studentId" class="form-input" placeholder="2024-12345">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-gradient">Submit Concern</button>
+                </form>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="grid md:grid-cols-3 gap-8 my-12 animate-fadeInUp" style="animation-delay: 0.6s">
+                <div class="bg-white rounded-2xl p-8 card-shadow">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Confidential</h3>
+                    <p class="text-[var(--text-light)]">Your submission is secure and confidential. Anonymous submissions are completely untraceable.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 card-shadow">
+                    <div class="text-4xl mb-4">👥</div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Student-Led</h3>
+                    <p class="text-[var(--text-light)]">Managed by fellow students who understand campus life and are committed to making positive changes.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 card-shadow">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Fast Response</h3>
+                    <p class="text-[var(--text-light)]">We aim to review and respond to all submissions within 24 hours, with updates on progress.</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="animate-fadeIn" style="animation-delay: 0.8s; margin-top: 4rem;">
+                <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 28px 28px 0 0; padding: 3rem 2rem 1.5rem; color: white;">
+
+                    <!-- Top section: Logo + Columns -->
+                    <div class="footer-grid" style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem;">
+
+                        <!-- Brand column -->
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">🎓</div>
+                                <span style="font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700;">Campus Voice</span>
+                            </div>
+                            <p style="font-size: 0.875rem; opacity: 0.8; line-height: 1.7; margin-bottom: 1.25rem;">A student-led platform for raising concerns and driving real change at the University of the Cordilleras, Baguio City.</p>
+                        </div>
+
+                        <!-- Platform links -->
+                        <div>
+                            <h4 style="font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; margin-bottom: 1rem; opacity: 1;">Platform</h4>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+                                <li><a href="#" onclick="document.getElementById('concernForm').scrollIntoView({behavior:'smooth'}); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Submit a Concern</a></li>
+                                <li><a href="#" onclick="openInfoModal('faq'); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">FAQ</a></li>
+                                <li><a href="#" onclick="openInfoModal('about'); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">How It Works</a></li>
+                                <li><a href="#" onclick="showLoginPage(); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Admin Login</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- University links -->
+                        <div>
+                            <h4 style="font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">University</h4>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+                                <li><a href="https://uc-bcf.edu.ph" target="_blank" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">UC Official Website</a></li>
+                                <li><a href="https://web.uc-bcf.edu.ph" target="_blank" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">UC News</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Legal / Contact -->
+                        <div>
+                            <h4 style="font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Legal & Contact</h4>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+                                <li><a href="#" onclick="openInfoModal('privacy'); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Privacy Policy</a></li>
+                                <li><a href="#" onclick="openInfoModal('terms'); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Terms of Use</a></li>
+                                <li><a href="#" onclick="openInfoModal('contact'); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Contact Us</a></li>
+                                <li><a href="#" onclick="openInfoModal('about'); return false;" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.875rem; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">About Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+                        <p style="font-size: 0.8rem; opacity: 0.65; margin: 0;">© 2026 Campus Voice · University of the Cordilleras · Gov. Pack Rd., Baguio City, Philippines</p>
+                        <p style="font-size: 0.8rem; opacity: 0.65; margin: 0;">Built with 💚 by UC Students · Compliant with RA 10173 (Data Privacy Act)</p>
+                    </div>
+
+                </div>
+            </footer>
+            </div><!-- end center content -->
+
+            <!-- Right Ad Sidebar -->
+            <div id="rightAdSidebar" class="ad-sidebar ad-sidebar-right"></div>
+        </div><!-- end mainPageWrapper -->
+    </div>
+
+        <!-- Login Page -->
+    <div id="loginPage" class="page hidden">
+        <div class="login-container">
+            <div class="login-card">
+                <a href="#" class="back-link" onclick="showMainPage(); return false;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                    Back to Campus Voice
+                </a>
+
+                <div class="login-header">
+                    <div class="logo-icon logo-icon-gradient">🔐</div>
+                    <h1>Admin Login</h1>
+                    <p>Access the complaint management dashboard</p>
+                </div>
+
+                <div id="loginError" class="error-message hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" x2="12" y1="8" y2="12"/>
+                        <line x1="12" x2="12.01" y1="16" y2="16"/>
+                    </svg>
+                    Invalid username or password
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+                        <div style="position: relative;">
+                            <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light);" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <input type="text" id="loginUsername" class="form-input" style="padding-left: 3rem;" placeholder="Enter username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <div style="position: relative;">
+                            <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light);" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <input type="password" id="loginPassword" class="form-input" style="padding-left: 3rem;" placeholder="Enter password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-gradient">Sign In</button>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboardPage" class="page hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <a href="#" onclick="showMainPage(); return false;" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit;">
+                        <div class="w-10 h-10 logo-icon-gradient rounded-xl flex items-center justify-center text-xl">🎓</div>
+                        <span class="font-heading font-bold">Campus Voice</span>
+                    </a>
+                    <span style="color: var(--text-light);">/</span>
+                    <span>Admin Dashboard</span>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="btn-secondary" onclick="showResetConfirm()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                            <path d="M21 3v5h-5"/>
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                            <path d="M8 16H3v5"/>
+                        </svg>
+                        Reset Data
+                    </button>
+                    <button class="btn-secondary" onclick="logout()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" x2="9" y1="12" y2="12"/>
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="dashboardStats">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Ads Management -->
+            <div class="ads-admin-section">
+                <h3>📢 Manage Advertisements</h3>
+                <div class="ads-admin-grid">
+                    <div class="form-group">
+                        <label>Ad Title</label>
+                        <input type="text" id="adTitle" class="form-input" placeholder="e.g. Bookstore Sale!">
+                    </div>
+                    <div class="form-group">
+                        <label>Emoji / Icon <span style="color:var(--text-light);font-weight:400;font-size:0.8rem;">(used if no image)</span></label>
+                        <input type="text" id="adEmoji" class="form-input" placeholder="e.g. 📚" maxlength="4">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Description</label>
+                        <input type="text" id="adDesc" class="form-input" placeholder="Short description shown on the ad card">
+                    </div>
+                    <div class="form-group">
+                        <label>CTA Button Label</label>
+                        <input type="text" id="adCta" class="form-input" placeholder="e.g. Learn More">
+                    </div>
+                    <div class="form-group">
+                        <label>Card Color</label>
+                        <div class="color-picker-row" id="adColorPicker">
+                            <div class="color-swatch selected" style="background: linear-gradient(135deg,#006633,#004d26)" data-color="linear-gradient(135deg,#006633,#004d26)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#339966,#006633)" data-color="linear-gradient(135deg,#339966,#006633)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#3B82F6,#1D4ED8)" data-color="linear-gradient(135deg,#3B82F6,#1D4ED8)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#10B981,#059669)" data-color="linear-gradient(135deg,#10B981,#059669)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#8B5CF6,#6D28D9)" data-color="linear-gradient(135deg,#8B5CF6,#6D28D9)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#F59E0B,#D97706)" data-color="linear-gradient(135deg,#F59E0B,#D97706)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#EC4899,#BE185D)" data-color="linear-gradient(135deg,#EC4899,#BE185D)" onclick="selectAdColor(this)"></div>
+                            <div class="color-swatch" style="background: linear-gradient(135deg,#334155,#0F172A)" data-color="linear-gradient(135deg,#334155,#0F172A)" onclick="selectAdColor(this)"></div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Ad Image <span style="color:var(--text-light);font-weight:400;font-size:0.8rem;">(optional — shown at top of card)</span></label>
+                        <div class="img-upload-area" id="adImgUploadArea">
+                            <input type="file" id="adImageFile" accept="image/*" onchange="handleAdImageUpload(event)">
+                            <div class="img-upload-placeholder" id="adImgPlaceholder">
+                                <span>🖼️</span>
+                                <p>Click or drag an image here</p>
+                            </div>
+                            <img id="adImgPreview" class="img-upload-preview" style="display:none;" alt="preview">
+                        </div>
+                        <button type="button" id="adImgClearBtn" onclick="clearAdImage()" style="display:none; margin-top:0.5rem; background:none; border:none; color:var(--primary); font-size:0.8rem; cursor:pointer;">✕ Remove image</button>
+                    </div>
+                </div>
+                <button onclick="saveAd()" class="btn-gradient" style="width:auto; padding: 0.75rem 1.75rem; font-size: 0.95rem;" id="adSaveBtn">+ Add Advertisement</button>
+
+                <div id="adsList" style="margin-top: 1.5rem;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Complaints -->
+            <div class="complaints-container">
+                <div class="complaints-list">
+                    <div class="filter-bar">
+                        <input type="text" id="searchInput" class="form-input" placeholder="Search complaints..." oninput="filterComplaints()">
+                        <select id="statusFilter" class="form-input" onchange="filterComplaints()">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div id="complaintsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="detail-panel" id="detailPanel">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" x2="8" y1="13" y2="13"/>
+                            <line x1="16" x2="8" y1="17" y2="17"/>
+                            <line x1="10" x2="8" y1="9" y2="9"/>
+                        </svg>
+                        <p>Select a complaint to view details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+            <h2>Concern Submitted!</h2>
+            <p id="successModalMessage">Thank you for speaking up. Your concern has been received and will be reviewed by our team within 24 hours.</p>
+            <button class="modal-btn" onclick="closeModal()">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+            <h2>Reset All Data?</h2>
+            <p>This will restore all complaints to the original sample data. Any new submissions will be lost. This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn-secondary" onclick="closeResetModal()">Cancel</button>
+                <button class="btn-danger" onclick="confirmReset()">Reset Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🗑️</div>
+            <h2>Delete Complaint?</h2>
+            <p>Are you sure you want to delete this complaint? This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Expand Modal -->
+    <div class="ad-expand-modal" id="adExpandModal" onclick="closeAdExpand(event)">
+        <div class="ad-expand-card" id="adExpandCard">
+            <button class="ad-expand-close" onclick="closeAdModal()">✕</button>
+            <div id="adExpandContent"><!-- filled by JS --></div>
+        </div>
+    </div>
+
+    <!-- About Us Modal -->
+    <div class="info-modal" id="modal-about" onclick="closeInfoModal('about', event)">
+        <div class="info-modal-box">
+            <div class="info-modal-header">
+                <div>
+                    <h2>🎓 About Campus Voice</h2>
+                    <p>Empowering students to shape a better campus since 2022.</p>
+                </div>
+                <button class="info-modal-close" onclick="closeInfoModal('about')">✕</button>
+            </div>
+            <div class="info-modal-body">
+                <h3>Who We Are</h3>
+                <p>Campus Voice is a student-led platform built to give every student a safe, structured, and meaningful channel to raise concerns about life on campus. From broken facilities to academic disputes, we believe every concern deserves to be heard — and acted upon.</p>
+                <p>Founded in 2022 by a small group of student government leaders, Campus Voice has since grown into the university's primary student feedback system, handling thousands of submissions per semester.</p>
+                <hr class="info-modal-divider">
+                <h3>Our Mission</h3>
+                <p>To bridge the gap between students and administration by creating a transparent, accountable system that ensures student concerns are tracked, addressed, and resolved in a timely manner.</p>
+                <hr class="info-modal-divider">
+                <h3>How It Works</h3>
+                <ul>
+                    <li>Students submit a concern using the form on the home page.</li>
+                    <li>Our moderation team reviews each submission within 24 hours.</li>
+                    <li>Concerns are forwarded to the appropriate department or office.</li>
+                    <li>Status is updated as: Pending → In Progress → Resolved.</li>
+                    <li>Anonymous submissions are fully protected and untraceable.</li>
+                </ul>
+                <hr class="info-modal-divider">
+                <h3>Our Team</h3>
+                <p>We are a volunteer team of student moderators, one faculty advisor, and a technical team. We operate under the Student Government Association (SGA) and report directly to the Dean of Students Office.</p>
+                <ul>
+                    <li>Platform Director: Alex M. Cruz (SGA President)</li>
+                    <li>Faculty Advisor: Prof. Donna Reyes, College of Education</li>
+                    <li>Head Moderator: Jamie Santos</li>
+                    <li>Technical Lead: Nico Lim</li>
+                </ul>
+                <hr class="info-modal-divider">
+                <h3>By the Numbers (2026)</h3>
+                <ul>
+                    <li>4,200+ concerns submitted to date</li>
+                    <li>87% resolution rate within 7 days</li>
+                    <li>12 departments actively partnered</li>
+                    <li>Available to all 18,500+ enrolled students</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="info-modal" id="modal-privacy" onclick="closeInfoModal('privacy', event)">
+        <div class="info-modal-box">
+            <div class="info-modal-header">
+                <div>
+                    <h2>🔒 Privacy Policy</h2>
+                    <p>Last updated: January 1, 2026</p>
+                </div>
+                <button class="info-modal-close" onclick="closeInfoModal('privacy')">✕</button>
+            </div>
+            <div class="info-modal-body">
+                <h3>1. Information We Collect</h3>
+                <p>When you submit a concern, we may collect your name, student ID, and email address — only if you choose not to submit anonymously. Anonymous submissions collect no personally identifiable information.</p>
+                <h3>2. Anonymous Submissions</h3>
+                <p>When you enable the "Submit Anonymously" toggle, your submission is processed without any identifying data. No IP address, device fingerprint, or session data is linked to your submission. Even our moderators cannot identify anonymous submitters.</p>
+                <h3>3. How We Use Your Information</h3>
+                <ul>
+                    <li>To route your concern to the correct department or office.</li>
+                    <li>To follow up with updates on your submission's status.</li>
+                    <li>To generate anonymized aggregate statistics (e.g., how many concerns were submitted per category).</li>
+                    <li>We do not sell, rent, or share your personal data with third parties.</li>
+                </ul>
+                <h3>4. Data Storage & Security</h3>
+                <p>All data is stored securely on university-managed servers within the Philippines, compliant with the Data Privacy Act of 2012 (Republic Act No. 10173). Access is limited to authorized moderators and administrators.</p>
+                <h3>5. Data Retention</h3>
+                <p>Resolved complaints are archived for 2 years before permanent deletion. Anonymous submissions are deleted after 1 year. You may request deletion of your personally-submitted data at any time by contacting us.</p>
+                <h3>6. Your Rights</h3>
+                <ul>
+                    <li>Right to access your submitted data.</li>
+                    <li>Right to correct inaccurate information.</li>
+                    <li>Right to erasure of your personal data.</li>
+                    <li>Right to file a complaint with the National Privacy Commission.</li>
+                </ul>
+                <h3>7. Cookies</h3>
+                <p>This platform uses only functional localStorage (no tracking cookies) to save your submitted concerns locally in your browser for reference. No third-party analytics or advertising trackers are used.</p>
+                <h3>8. Contact for Privacy Concerns</h3>
+                <p>If you have questions about this policy, contact our Data Privacy Officer at <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="28585a415e494b51684b4945585d5b5e47414b4d065d46415e4d5a5b415c51064d4c5d">[email&#160;protected]</a></strong> or visit the Office of Data Protection, Admin Building Room 104.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div class="info-modal" id="modal-faq" onclick="closeInfoModal('faq', event)">
+        <div class="info-modal-box">
+            <div class="info-modal-header">
+                <div>
+                    <h2>❓ Frequently Asked Questions</h2>
+                    <p>Everything you need to know about submitting and tracking concerns.</p>
+                </div>
+                <button class="info-modal-close" onclick="closeInfoModal('faq')">✕</button>
+            </div>
+            <div class="info-modal-body">
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">Who can submit a concern? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Any currently enrolled student of the university can submit a concern. You do not need to log in — simply fill out the form on the home page. Faculty and staff concerns are handled through a separate internal channel.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">Is it truly anonymous? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Yes. When the "Submit Anonymously" toggle is enabled, no personal data is collected or stored. Not even our administrators can identify who submitted an anonymous concern. However, please note that fully anonymous concerns may be harder to follow up on if we need additional information.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">How long does it take for my concern to be addressed? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Our team reviews all submissions within 24 hours and forwards them to the appropriate department. Simple facility issues are often resolved within 48–72 hours. More complex matters (academic disputes, policy changes) may take 1–2 weeks. You'll receive email updates if you submitted with your contact information.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">Can I submit the same concern multiple times? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">We encourage you to submit a concern only once to avoid duplicate entries. If your original concern has not been addressed after 5 business days, you may submit a follow-up using the same category and referencing your original concern in the description.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">What happens to resolved complaints? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Resolved complaints are archived in our system for 2 years for record-keeping and accountability purposes. They are used to track patterns of recurring issues and improve campus services over time.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">Can I withdraw or edit my concern after submitting? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Once submitted, concerns cannot be edited directly by students. If you need to withdraw or correct a submission, please contact us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a494b475a5f595c4543494f6a5f44435c4f5859435e53044f4e5f">[email&#160;protected]</a> with the details of your submission (title, date, category). Anonymous submissions cannot be withdrawn.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">What kinds of concerns are NOT accepted? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">We do not accept complaints targeting specific individuals by name for personal grievances, submissions that contain hate speech or threats, or requests for academic grade changes (which must go through the Registrar). Emergency situations should be reported directly to Campus Security at ext. 911.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">How do I know if my concern was received? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">After submitting, a confirmation pop-up will appear on screen. If you provided your email address, you will also receive a confirmation email within a few minutes. If you submitted anonymously, please take note of the category and date in case you need to follow up.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="info-modal" id="modal-contact" onclick="closeInfoModal('contact', event)">
+        <div class="info-modal-box">
+            <div class="info-modal-header">
+                <div>
+                    <h2>📬 Contact Us</h2>
+                    <p>Reach out to the Campus Voice team directly.</p>
+                </div>
+                <button class="info-modal-close" onclick="closeInfoModal('contact')">✕</button>
+            </div>
+            <div class="info-modal-body">
+                <h3>General Inquiries</h3>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <div class="ci-label">📧 Email</div>
+                        <div class="ci-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84e7e5e9f4f1f7f2ebede7e1c4f1eaedf2e1f6f7edf0fdaae1e0f1">[email&#160;protected]</a></div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="ci-label">📞 Phone</div>
+                        <div class="ci-value">ext. 3050 (Mon–Fri)</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="ci-label">📍 Office</div>
+                        <div class="ci-value">Student Center, Room 201</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="ci-label">🕐 Hours</div>
+                        <div class="ci-value">Mon–Fri, 8AM – 6PM</div>
+                    </div>
+                </div>
+                <hr class="info-modal-divider">
+                <h3>Specific Contacts</h3>
+                <ul>
+                    <li><strong>Platform Director:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="482c213a2d2b3c273a082b2925383d3b3e27212b2d663d26213e2d3a3b213c31662d2c3d">[email&#160;protected]</a></li>
+                    <li><strong>Technical Support:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="255140464d65464448555056534a4c46400b504b4c534057564c515c0b404150">[email&#160;protected]</a></li>
+                    <li><strong>Privacy Officer:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6d6d4cfd0c7c5dfe6c5c7cbd6d3d5d0c9cfc5c388d3c8cfd0c3d4d5cfd2df88c3c2d3">[email&#160;protected]</a></li>
+                    <li><strong>Faculty Advisor:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6e0f0a18071d011c2e0d0f031e1b1d1801070d0b401b0007180b1c1d071a17400b0a1b">[email&#160;protected]</a></li>
+                </ul>
+                <hr class="info-modal-divider">
+                <h3>Social Media</h3>
+                <ul>
+                    <li>Instagram: @CampusVoiceUniversity</li>
+                    <li>Facebook: facebook.com/CampusVoiceUniversity</li>
+                    <li>Twitter/X: @CampusVoiceUni</li>
+                </ul>
+                <hr class="info-modal-divider">
+                <h3>Emergency & Urgent Issues</h3>
+                <p>Campus Voice is not an emergency response service. For urgent safety concerns, please contact:</p>
+                <ul>
+                    <li>Campus Security: <strong>ext. 911</strong> (24/7)</li>
+                    <li>Medical Emergency: <strong>ext. 112</strong></li>
+                    <li>Dean of Students (urgent): <strong>ext. 3001</strong></li>
+                </ul>
+                <hr class="info-modal-divider">
+                <h3>Report a Platform Issue</h3>
+                <p>Experiencing a bug, broken feature, or accessibility issue on this platform? Email our technical team at <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="176372747f5774767a67626461787e74723962797e617265647e636e39727362">[email&#160;protected]</a></strong> with a description and screenshots if possible.</p>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // ==================== DATA ====================
+        const sampleComplaints = [];
+        const _unusedData = [
+            {
+                id: '1',
+                category: 'facilities',
+                categoryIcon: '🏢',
+                title: 'Broken AC in Library 2nd Floor',
+                description: 'The air conditioning unit in the main reading room on the 2nd floor has not been working for 3 days. It gets very hot during afternoon hours making it difficult to study.',
+                location: 'Library, 2nd Floor Reading Room',
+                isAnonymous: false,
+                name: 'Sarah Johnson',
+                studentId: '2023-45678',
+                email: 'sarah.j@university.edu',
+                wantsEmailUpdates: true,
+                updateEmail: 'sarah.j@university.edu',
+                status: 'in-progress',
+                submittedAt: '2024-02-25T10:30:00Z',
+                updatedAt: '2024-02-26T14:20:00Z',
+            },
+            {
+                id: '2',
+                category: 'academics',
+                categoryIcon: '📚',
+                title: 'Course Registration System Error',
+                description: 'Unable to register for CS 401 course. The system shows "prerequisite not met" but I have completed all required courses. Need urgent help as registration closes tomorrow.',
+                location: 'Online - Registration Portal',
+                isAnonymous: false,
+                name: 'Michael Chen',
+                studentId: '2022-34521',
+                email: 'm.chen@university.edu',
+                wantsEmailUpdates: true,
+                updateEmail: 'm.chen@university.edu',
+                status: 'resolved',
+                submittedAt: '2024-02-24T08:15:00Z',
+                updatedAt: '2024-02-24T16:45:00Z',
+            },
+            {
+                id: '3',
+                category: 'safety',
+                categoryIcon: '🛡️',
+                title: 'Poor Lighting in Parking Lot C',
+                description: 'Several street lights in Parking Lot C are not working. It creates a safety hazard for students leaving evening classes. Request immediate repair.',
+                location: 'Parking Lot C, North Campus',
+                isAnonymous: true,
+                wantsEmailUpdates: false,
+                status: 'pending',
+                submittedAt: '2024-02-27T19:00:00Z',
+                updatedAt: '2024-02-27T19:00:00Z',
+            },
+            {
+                id: '4',
+                category: 'student-life',
+                categoryIcon: '🎭',
+                title: 'Club Room Booking Issues',
+                description: 'The Photography Club has been trying to book Room 204 in the Student Center for 2 weeks but the online system always shows it as unavailable, even when we can see it\'s empty.',
+                location: 'Student Center, Room 204',
+                isAnonymous: false,
+                name: 'Emma Rodriguez',
+                studentId: '2023-56789',
+                email: 'emma.r@university.edu',
+                status: 'resolved',
+                submittedAt: '2024-02-23T11:20:00Z',
+                updatedAt: '2024-02-25T09:30:00Z',
+            },
+            {
+                id: '5',
+                category: 'admin',
+                categoryIcon: '⚙️',
+                title: 'Financial Aid Document Processing Delay',
+                description: 'Submitted my FAFSA verification documents 3 weeks ago and still haven\'t received any confirmation. The deadline for next semester is approaching.',
+                location: 'Financial Aid Office',
+                isAnonymous: false,
+                name: 'David Park',
+                studentId: '2022-98765',
+                email: 'david.p@university.edu',
+                status: 'in-progress',
+                submittedAt: '2024-02-26T13:45:00Z',
+                updatedAt: '2024-02-27T10:00:00Z',
+            },
+            {
+                id: '6',
+                category: 'facilities',
+                categoryIcon: '🏢',
+                title: 'Water Fountain Not Working',
+                description: 'The water fountain near the Chemistry Lab on 3rd floor has been leaking and now completely stopped working. Students have to go to the 1st floor for water.',
+                location: 'Science Building, 3rd Floor',
+                isAnonymous: true,
+                status: 'resolved',
+                submittedAt: '2024-02-22T09:00:00Z',
+                updatedAt: '2024-02-24T11:30:00Z',
+            },
+            {
+                id: '7',
+                category: 'other',
+                categoryIcon: '💬',
+                title: 'Cafeteria Food Quality Concern',
+                description: 'The vegetarian options in the main cafeteria have been consistently poor lately. The salads are often wilted and there\'s very little protein variety.',
+                location: 'Main Cafeteria',
+                isAnonymous: false,
+                name: 'Lisa Thompson',
+                studentId: '2024-12345',
+                email: 'lisa.t@university.edu',
+                status: 'pending',
+                submittedAt: '2024-02-27T12:15:00Z',
+                updatedAt: '2024-02-27T12:15:00Z',
+            },
+            {
+                id: '8',
+                category: 'academics',
+                categoryIcon: '📚',
+                title: 'Professor Not Responding to Emails',
+                description: 'I\'ve sent 4 emails to Professor Williams over the past 2 weeks regarding my midterm grade dispute but haven\'t received any response.',
+                location: 'Engineering Department',
+                isAnonymous: false,
+                name: 'James Wilson',
+                studentId: '2023-45612',
+                email: 'james.w@university.edu',
+                status: 'in-progress',
+                submittedAt: '2024-02-25T16:30:00Z',
+                updatedAt: '2024-02-26T09:00:00Z',
+            },
+        ];
+
+        let complaints = JSON.parse(localStorage.getItem('campus_voice_complaints')) || [];
+        // Clear old sample data on first load with new theme
+        if (!localStorage.getItem('cv_theme_v2')) {
+            localStorage.removeItem('campus_voice_complaints');
+            localStorage.setItem('cv_theme_v2', '1');
+            complaints = [];
+        }
+        let selectedComplaintId = null;
+        let deleteId = null;
+
+        // ==================== AUTH ====================
+        const ADMIN_USERNAME = 'Admin67';
+        const ADMIN_PASSWORD = 'AdminPassword67';
+
+        function isAuthenticated() {
+            return localStorage.getItem('campus_voice_admin') === 'true';
+        }
+
+        // ==================== NAVIGATION ====================
+        function showMainPage() {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById('mainPage').classList.remove('hidden');
+            document.getElementById('adminLoginBtn').classList.remove('hidden');
+            updateStats();
+            renderAdsPublic();
+        }
+
+        function showLoginPage() {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('adminLoginBtn').classList.add('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            if (!isAuthenticated()) {
+                showLoginPage();
+                return;
+            }
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById('dashboardPage').classList.remove('hidden');
+            document.getElementById('adminLoginBtn').classList.add('hidden');
+            renderDashboard();
+            renderAdsAdmin();
+        }
+
+        // ==================== FORM HANDLING ====================
+        let selectedCategories = []; // now an array for multi-select
+        let isAnonymous = false;
+        let wantsEmailUpdates = false;
+        let pendingFormData = null;
+
+        function toggleCategory(category, icon, element) {
+            event.preventDefault();
+            const idx = selectedCategories.findIndex(c => c.value === category);
+            if (idx > -1) {
+                selectedCategories.splice(idx, 1);
+                element.classList.remove('selected');
+                element.querySelector('input').checked = false;
+            } else {
+                selectedCategories.push({ value: category, icon: icon });
+                element.classList.add('selected');
+                element.querySelector('input').checked = true;
+            }
+        }
+
+        function toggleAnonymous() {
+            isAnonymous = !isAnonymous;
+            document.getElementById('anonymousToggle').classList.toggle('active');
+            const contactFields = document.getElementById('contactFields');
+            const nameInput = document.getElementById('name');
+            const studentIdInput = document.getElementById('studentId');
+            const emailUpdatesSection = document.getElementById('emailUpdatesSection');
+
+            if (isAnonymous) {
+                contactFields.style.display = 'none';
+                nameInput.removeAttribute('required');
+                studentIdInput.removeAttribute('required');
+                // Disable email updates for anonymous submissions
+                emailUpdatesSection.classList.add('disabled');
+                wantsEmailUpdates = false;
+                document.getElementById('emailUpdatesToggle').classList.remove('active');
+                document.getElementById('emailUpdatesInputWrapper').classList.remove('show');
+                document.getElementById('updateEmail').value = '';
+            } else {
+                contactFields.style.display = 'block';
+                nameInput.setAttribute('required', '');
+                studentIdInput.setAttribute('required', '');
+                // Enable email updates
+                emailUpdatesSection.classList.remove('disabled');
+            }
+        }
+
+        function toggleEmailUpdates() {
+            if (isAnonymous) return; // Can't enable for anonymous
+
+            wantsEmailUpdates = !wantsEmailUpdates;
+            document.getElementById('emailUpdatesToggle').classList.toggle('active');
+            const inputWrapper = document.getElementById('emailUpdatesInputWrapper');
+            const header = document.getElementById('emailUpdatesHeader');
+
+            if (wantsEmailUpdates) {
+                inputWrapper.classList.add('show');
+                header.classList.add('has-email');
+            } else {
+                inputWrapper.classList.remove('show');
+                header.classList.remove('has-email');
+                document.getElementById('updateEmail').value = '';
+            }
+        }
+
+        // ==================== WORD COUNTER ====================
+        function updateCharCount() {
+            const desc = document.getElementById('description');
+            const text = desc.value.trim();
+            const words = text === '' ? 0 : text.split(/\s+/).length;
+            const el = document.getElementById('charCount');
+            el.textContent = words + ' / 200 words';
+            if (words >= 190) {
+                el.style.color = words >= 200 ? '#EF4444' : '#F59E0B';
+            } else {
+                el.style.color = 'var(--text-light)';
+            }
+            // Enforce 200 word limit
+            if (words > 200) {
+                const trimmed = text.split(/\s+/).slice(0, 200).join(' ');
+                desc.value = trimmed;
+                el.textContent = '200 / 200 words';
+                el.style.color = '#EF4444';
+            }
+        }
+
+        // ==================== ATTACHMENTS ====================
+        let attachedFiles = [];
+
+        function handleAttachSelect(fileList) {
+            addFiles(Array.from(fileList));
+            document.getElementById('attachInput').value = '';
+        }
+
+        function handleAttachDrop(e) {
+            e.preventDefault();
+            const zone = document.getElementById('attachDropZone');
+            zone.style.borderColor = 'var(--border)';
+            zone.style.background = 'var(--bg)';
+            addFiles(Array.from(e.dataTransfer.files));
+        }
+
+        function addFiles(files) {
+            const remaining = 5 - attachedFiles.length;
+            const toAdd = files.slice(0, remaining);
+            toAdd.forEach(file => {
+                if (file.size > 5 * 1024 * 1024) { alert(file.name + ' exceeds the 5MB limit.'); return; }
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    attachedFiles.push({ name: file.name, size: file.size, type: file.type, dataUrl: ev.target.result });
+                    renderAttachPreviews();
+                };
+                reader.readAsDataURL(file);
+            });
+            if (files.length > remaining) alert('Max 5 files allowed. Only the first ' + remaining + ' were added.');
+        }
+
+        function removeAttach(idx) {
+            attachedFiles.splice(idx, 1);
+            renderAttachPreviews();
+        }
+
+        function renderAttachPreviews() {
+            const list = document.getElementById('attachPreviewList');
+            if (attachedFiles.length === 0) { list.innerHTML = ''; return; }
+            list.innerHTML = attachedFiles.map((f, i) => {
+                const isImg = f.type.startsWith('image/');
+                const size = f.size < 1024 * 1024 ? (f.size / 1024).toFixed(1) + ' KB' : (f.size / (1024*1024)).toFixed(1) + ' MB';
+                return `<div style="display:flex; align-items:center; gap:0.75rem; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:0.6rem 0.85rem;">
+                    ${isImg ? `<img src="${f.dataUrl}" style="width:36px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0;">` : `<span style="font-size:1.5rem;flex-shrink:0;">📄</span>`}
+                    <div style="flex:1; min-width:0;">
+                        <p style="font-size:0.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.name}</p>
+                        <p style="font-size:0.72rem;color:var(--text-light);">${size}</p>
+                    </div>
+                    <button type="button" onclick="removeAttach(${i})" style="background:none;border:none;cursor:pointer;color:#EF4444;font-size:1.1rem;flex-shrink:0;" title="Remove">✕</button>
+                </div>`;
+            }).join('');
+        }
+
+        document.getElementById('concernForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (selectedCategories.length === 0) {
+                alert('Please select at least one category');
+                return;
+            }
+
+            // Validate email updates if enabled
+            if (wantsEmailUpdates) {
+                const updateEmail = document.getElementById('updateEmail').value.trim();
+                if (!updateEmail) {
+                    alert('Please enter an email address to receive updates, or disable the updates toggle.');
+                    document.getElementById('updateEmail').focus();
+                    return;
+                }
+                if (!isValidEmail(updateEmail)) {
+                    alert('Please enter a valid email address for updates.');
+                    document.getElementById('updateEmail').focus();
+                    return;
+                }
+            }
+
+            // Store form data for submission after ad captcha
+            pendingFormData = {
+                id: Date.now().toString(),
+                categories: selectedCategories,
+                category: selectedCategories.map(c => c.value).join(', '),
+                categoryIcon: selectedCategories.map(c => c.icon).join(''),
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                incidentDate: document.getElementById('incidentDate').value,
+                location: document.getElementById('location').value,
+                isAnonymous: isAnonymous,
+                name: isAnonymous ? undefined : document.getElementById('name').value,
+                studentId: isAnonymous ? undefined : document.getElementById('studentId').value,
+                wantsEmailUpdates: wantsEmailUpdates,
+                updateEmail: wantsEmailUpdates ? document.getElementById('updateEmail').value : undefined,
+                status: 'pending',
+                submittedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                attachments: attachedFiles.map(f => ({ name: f.name, size: f.size, type: f.type, dataUrl: f.dataUrl })),
+            };
+
+            // Submit directly — no ad captcha
+            submitPendingComplaint();
+        });
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function submitPendingComplaint() {
+            if (!pendingFormData) return;
+
+            complaints.unshift(pendingFormData);
+            saveComplaints();
+
+            // Customize success message based on email updates preference
+            const successMessage = document.getElementById('successModalMessage');
+            if (pendingFormData.wantsEmailUpdates && pendingFormData.updateEmail) {
+                successMessage.innerHTML = `Thank you for speaking up. Your concern has been received and will be reviewed by our team within 24 hours.<br><br>📧 <strong>Email updates enabled!</strong> We'll notify you at <strong>${pendingFormData.updateEmail}</strong> when your concern status changes.`;
+            } else {
+                successMessage.textContent = 'Thank you for speaking up. Your concern has been received and will be reviewed by our team within 24 hours.';
+            }
+
+            document.getElementById('successModal').classList.add('show');
+            document.getElementById('concernForm').reset();
+            attachedFiles = [];
+            renderAttachPreviews();
+            updateCharCount();
+            selectedCategories = [];
+            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+
+            // Reset toggles
+            if (isAnonymous) toggleAnonymous();
+            if (wantsEmailUpdates) {
+                wantsEmailUpdates = false;
+                document.getElementById('emailUpdatesToggle').classList.remove('active');
+                document.getElementById('emailUpdatesInputWrapper').classList.remove('show');
+                document.getElementById('emailUpdatesHeader').classList.remove('has-email');
+            }
+
+            selectedCategory = '';
+            selectedCategoryIcon = '';
+            pendingFormData = null;
+            updateStats();
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+
+
+        // ==================== LOGIN ====================
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                localStorage.setItem('campus_voice_admin', 'true');
+                showDashboard();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('campus_voice_admin');
+            showMainPage();
+        }
+
+        // ==================== DASHBOARD ====================
+        function saveComplaints() {
+            localStorage.setItem('campus_voice_complaints', JSON.stringify(complaints));
+        }
+
+        function getStats() {
+            const total = complaints.length;
+            const resolved = complaints.filter(c => c.status === 'resolved').length;
+            const pending = complaints.filter(c => c.status === 'pending').length;
+            const inProgress = complaints.filter(c => c.status === 'in-progress').length;
+            const resolutionRate = total > 0 ? Math.round((resolved / total) * 100) : 0;
+
+            return { total, resolved, resolutionRate, pending, inProgress };
+        }
+
+        function updateStats() {
+            const stats = getStats();
+            const container = document.getElementById('statsContainer');
+            const cardStyle = `background:white; border-radius:20px; padding:2rem; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.08); transition:transform 0.3s ease, box-shadow 0.3s ease;`;
+            const valStyle = `font-family:'Fraunces',serif; font-size:2.5rem; font-weight:700; color:var(--primary); margin-bottom:0.5rem; line-height:1;`;
+            const labelStyle = `font-size:0.9rem; color:var(--text-light);`;
+            container.innerHTML = `
+                <div style="${cardStyle}" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)'">
+                    <div style="${valStyle}">${stats.total}</div>
+                    <div style="${labelStyle}">Concerns Submitted</div>
+                </div>
+                <div style="${cardStyle}" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)'">
+                    <div style="${valStyle}">${stats.resolved}</div>
+                    <div style="${labelStyle}">Issues Resolved</div>
+                </div>
+                <div style="${cardStyle}" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)'">
+                    <div style="${valStyle}">${stats.resolutionRate}%</div>
+                    <div style="${labelStyle}">Resolution Rate</div>
+                </div>
+                <div style="${cardStyle}" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)'">
+                    <div style="${valStyle}">24h</div>
+                    <div style="${labelStyle}">Avg Response Time</div>
+                </div>
+            `;
+        }
+
+        function renderDashboard() {
+            const stats = getStats();
+            document.getElementById('dashboardStats').innerHTML = `
+                <div class="stat-card total">
+                    <div class="stat-label">Total Complaints</div>
+                    <div class="stat-value">${stats.total}</div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value">${stats.pending}</div>
+                </div>
+                <div class="stat-card in-progress">
+                    <div class="stat-label">In Progress</div>
+                    <div class="stat-value">${stats.inProgress}</div>
+                </div>
+                <div class="stat-card resolved">
+                    <div class="stat-label">Resolved</div>
+                    <div class="stat-value">${stats.resolved}</div>
+                </div>
+            `;
+
+            filterComplaints();
+        }
+
+        function filterComplaints() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = complaints.filter(c => {
+                const matchesSearch = !searchQuery ||
+                    c.title.toLowerCase().includes(searchQuery) ||
+                    c.description.toLowerCase().includes(searchQuery);
+                const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            const listContainer = document.getElementById('complaintsList');
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M16 16s-1.5-2-4-2-4 2-4 2"/>
+                            <line x1="9" x2="9.01" y1="9" y2="9"/>
+                            <line x1="15" x2="15.01" y1="9" y2="9"/>
+                        </svg>
+                        <p>No complaints found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(c => `
+                <div class="complaint-item ${selectedComplaintId === c.id ? 'selected' : ''}" onclick="selectComplaint('${c.id}')">
+                    <div class="complaint-header">
+                        <span class="complaint-title">${c.categoryIcon} ${c.title}</span>
+                        <span class="status-badge ${c.status}">${c.status.replace('-', ' ')}</span>
+                    </div>
+                    <p class="complaint-preview">${c.description}</p>
+                    <div class="complaint-meta">
+                        <span>${formatDate(c.submittedAt)}</span>
+                        <span>${c.isAnonymous ? '🔒 Anonymous' : c.name}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectComplaint(id) {
+            selectedComplaintId = id;
+            const complaint = complaints.find(c => c.id === id);
+            if (!complaint) return;
+
+            filterComplaints();
+
+            document.getElementById('detailPanel').innerHTML = `
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+                        <h2>Complaint Details</h2>
+                        <button onclick="deselectComplaint()" style="background: none; border: none; cursor: pointer; color: var(--text-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6 6 18"/>
+                                <path d="m6 6 12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="detail-section">
+                        <label>Category</label>
+                        <p style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">${complaint.categoryIcon}</span>
+                            <span style="text-transform: capitalize;">${complaint.category}</span>
+                        </p>
+                    </div>
+
+                    <div class="detail-section">
+                        <label>Title</label>
+                        <p style="font-weight: 600;">${complaint.title}</p>
+                    </div>
+
+                    <div class="detail-section">
+                        <label>Description</label>
+                        <p>${complaint.description}</p>
+                    </div>
+
+                    ${complaint.attachments && complaint.attachments.length > 0 ? '<div class="detail-section"><label>Attachments (' + complaint.attachments.length + ')</label><div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.25rem;">' + complaint.attachments.map(function(a) { var isImg = a.type && a.type.startsWith('image/'); var size = a.size < 1024*1024 ? (a.size/1024).toFixed(1)+' KB' : (a.size/(1024*1024)).toFixed(1)+' MB'; return '<div style="display:flex;align-items:center;gap:0.75rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.85rem;">' + (isImg ? '<img src="' + a.dataUrl + '" style="width:36px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0;cursor:pointer;" onclick="window.open(this.src)">' : '<span style="font-size:1.4rem;">📄</span>') + '<div style="flex:1;min-width:0;"><p style="font-size:0.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + a.name + '</p><p style="font-size:0.72rem;color:var(--text-light);">' + size + '</p></div><a href="' + a.dataUrl + '" download="' + a.name + '" style="font-size:0.75rem;color:var(--primary);font-weight:500;text-decoration:none;">⬇ ' + (isImg ? 'Save' : 'Download') + '</a></div>'; }).join('') + '</div></div>' : ''}
+
+                    ${complaint.location ? `
+                    <div class="detail-section">
+                        <label>Location</label>
+                        <p style="display: flex; align-items: center; gap: 0.5rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            ${complaint.location}
+                        </p>
+                    </div>
+                    ` : ''}
+
+                    <div class="detail-section">
+                        <label>Submitted By</label>
+                        ${complaint.isAnonymous ? `
+                            <p style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                                Anonymous
+                            </p>
+                        ` : `
+                            <div style="space-y: 0.25rem;">
+                                <p style="font-weight: 500;">${complaint.name}</p>
+                                <p style="font-size: 0.875rem; color: var(--text-light);">ID: ${complaint.studentId}</p>
+                            </div>
+                        `}
+                    </div>
+
+                    ${complaint.wantsEmailUpdates ? `
+                    <div class="detail-section">
+                        <label>📧 Email Updates Enabled</label>
+                        <p style="font-size: 0.875rem; color: var(--text-light);">
+                            Updates will be sent to: <strong>${complaint.updateEmail}</strong>
+                        </p>
+                    </div>
+                    ` : ''}
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="detail-section">
+                            <label>Submitted</label>
+                            <p style="font-size: 0.875rem;">${formatDate(complaint.submittedAt)}</p>
+                        </div>
+                        <div class="detail-section">
+                            <label>Last Updated</label>
+                            <p style="font-size: 0.875rem;">${formatDate(complaint.updatedAt)}</p>
+                        </div>
+                        ${complaint.incidentDate ? `
+                        <div class="detail-section">
+                            <label>Date of Incident</label>
+                            <p style="font-size: 0.875rem; display:flex; align-items:center; gap:0.4rem;">📅 ${new Date(complaint.incidentDate + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="detail-section">
+                        <label>Update Status</label>
+                        <div class="status-buttons">
+                            <button class="status-btn pending ${complaint.status === 'pending' ? 'active' : ''}" onclick="updateStatus('${complaint.id}', 'pending')">Pending</button>
+                            <button class="status-btn in-progress ${complaint.status === 'in-progress' ? 'active' : ''}" onclick="updateStatus('${complaint.id}', 'in-progress')">In Progress</button>
+                            <button class="status-btn resolved ${complaint.status === 'resolved' ? 'active' : ''}" onclick="updateStatus('${complaint.id}', 'resolved')">Resolved</button>
+                        </div>
+                    </div>
+
+                    <button onclick="showDeleteConfirm('${complaint.id}')" class="btn-danger" style="width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        </svg>
+                        Delete Complaint
+                    </button>
+                </div>
+            `;
+        }
+
+        function deselectComplaint() {
+            selectedComplaintId = null;
+            filterComplaints();
+            document.getElementById('detailPanel').innerHTML = `
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" x2="8" y1="13" y2="13"/>
+                        <line x1="16" x2="8" y1="17" y2="17"/>
+                        <line x1="10" x2="8" y1="9" y2="9"/>
+                    </svg>
+                    <p>Select a complaint to view details</p>
+                </div>
+            `;
+        }
+
+        function updateStatus(id, status) {
+            const complaint = complaints.find(c => c.id === id);
+            if (complaint) {
+                complaint.status = status;
+                complaint.updatedAt = new Date().toISOString();
+                saveComplaints();
+                selectComplaint(id);
+                renderDashboard();
+            }
+        }
+
+        function showDeleteConfirm(id) {
+            deleteId = id;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deleteId = null;
+        }
+
+        function confirmDelete() {
+            if (deleteId) {
+                complaints = complaints.filter(c => c.id !== deleteId);
+                saveComplaints();
+                selectedComplaintId = null;
+                renderDashboard();
+                deselectComplaint();
+                closeDeleteModal();
+            }
+        }
+
+        function showResetConfirm() {
+            document.getElementById('resetModal').classList.add('show');
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').classList.remove('show');
+        }
+
+        function confirmReset() {
+            complaints = JSON.parse(JSON.stringify(sampleComplaints));
+            saveComplaints();
+            selectedComplaintId = null;
+            renderDashboard();
+            deselectComplaint();
+            closeResetModal();
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // ==================== ADVERTISEMENTS ====================
+        let ads = JSON.parse(localStorage.getItem('campusVoiceAds') || '[]');
+        let editingAdId = null;
+        let selectedAdColor = 'linear-gradient(135deg,#006633,#004d26)';
+        let currentAdImageData = null; // base64
+
+        function saveAdsStorage() {
+            localStorage.setItem('campusVoiceAds', JSON.stringify(ads));
+        }
+
+        function selectAdColor(el) {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAdColor = el.getAttribute('data-color');
+        }
+
+        function handleAdImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                currentAdImageData = ev.target.result;
+                const preview = document.getElementById('adImgPreview');
+                const placeholder = document.getElementById('adImgPlaceholder');
+                const area = document.getElementById('adImgUploadArea');
+                const clearBtn = document.getElementById('adImgClearBtn');
+                preview.src = currentAdImageData;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                area.classList.add('has-image');
+                clearBtn.style.display = 'inline-block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearAdImage() {
+            currentAdImageData = null;
+            const preview = document.getElementById('adImgPreview');
+            const placeholder = document.getElementById('adImgPlaceholder');
+            const area = document.getElementById('adImgUploadArea');
+            const clearBtn = document.getElementById('adImgClearBtn');
+            const fileInput = document.getElementById('adImageFile');
+            preview.src = '';
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+            area.classList.remove('has-image');
+            clearBtn.style.display = 'none';
+            fileInput.value = '';
+        }
+
+        function saveAd() {
+            const title = document.getElementById('adTitle').value.trim();
+            const emoji = document.getElementById('adEmoji').value.trim();
+            const desc = document.getElementById('adDesc').value.trim();
+            const cta = document.getElementById('adCta').value.trim();
+
+            if (!title || !desc) { alert('Please fill in at least the title and description.'); return; }
+
+            const adData = {
+                title,
+                emoji: emoji || '📢',
+                desc,
+                cta: cta || 'Learn More',
+                color: selectedAdColor,
+                image: currentAdImageData || null,
+            };
+
+            if (editingAdId) {
+                const idx = ads.findIndex(a => a.id === editingAdId);
+                if (idx !== -1) ads[idx] = { ...ads[idx], ...adData };
+                editingAdId = null;
+                document.getElementById('adSaveBtn').textContent = '+ Add Advertisement';
+            } else {
+                ads.push({ id: Date.now().toString(), ...adData });
+            }
+
+            saveAdsStorage();
+            clearAdForm();
+            renderAdsAdmin();
+            renderAdsPublic();
+        }
+
+        function clearAdForm() {
+            document.getElementById('adTitle').value = '';
+            document.getElementById('adEmoji').value = '';
+            document.getElementById('adDesc').value = '';
+            document.getElementById('adCta').value = '';
+            document.querySelectorAll('.color-swatch').forEach((s,i) => s.classList.toggle('selected', i===0));
+            selectedAdColor = 'linear-gradient(135deg,#006633,#004d26)';
+            editingAdId = null;
+            document.getElementById('adSaveBtn').textContent = '+ Add Advertisement';
+            clearAdImage();
+        }
+
+        function editAd(id) {
+            const ad = ads.find(a => a.id === id);
+            if (!ad) return;
+            editingAdId = id;
+            document.getElementById('adTitle').value = ad.title;
+            document.getElementById('adEmoji').value = ad.emoji;
+            document.getElementById('adDesc').value = ad.desc;
+            document.getElementById('adCta').value = ad.cta;
+            selectedAdColor = ad.color;
+            document.querySelectorAll('.color-swatch').forEach(s => {
+                s.classList.toggle('selected', s.getAttribute('data-color') === ad.color);
+            });
+            // restore image if any
+            if (ad.image) {
+                currentAdImageData = ad.image;
+                const preview = document.getElementById('adImgPreview');
+                const placeholder = document.getElementById('adImgPlaceholder');
+                const area = document.getElementById('adImgUploadArea');
+                const clearBtn = document.getElementById('adImgClearBtn');
+                preview.src = ad.image;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                area.classList.add('has-image');
+                clearBtn.style.display = 'inline-block';
+            } else {
+                clearAdImage();
+            }
+            document.getElementById('adSaveBtn').textContent = '💾 Update Advertisement';
+            document.getElementById('adTitle').focus();
+        }
+
+        function deleteAd(id) {
+            ads = ads.filter(a => a.id !== id);
+            saveAdsStorage();
+            renderAdsAdmin();
+            renderAdsPublic();
+        }
+
+        function dismissAd(id) {
+            const card = document.getElementById('ad-card-' + id);
+            if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.85)'; card.style.transition = 'all 0.3s ease'; setTimeout(() => card.remove(), 300); }
+        }
+
+        function renderAdsAdmin() {
+            const el = document.getElementById('adsList');
+            if (!el) return;
+            if (ads.length === 0) {
+                el.innerHTML = '<p style="color:var(--text-light); font-size:0.875rem; text-align:center; padding:1rem 0;">No advertisements yet. Add one above to display it on the home page sidebars.</p>';
+                return;
+            }
+            el.innerHTML = ads.map(ad => `
+                <div class="ads-list-item">
+                    ${ad.image
+                        ? `<img class="ad-thumb" src="${ad.image}" alt="${ad.title}">`
+                        : `<div class="ad-thumb-placeholder" style="background:${ad.color}">${ad.emoji}</div>`
+                    }
+                    <div class="ad-info">
+                        <strong>${ad.title}</strong>
+                        <span>${ad.desc.substring(0,60)}${ad.desc.length > 60 ? '…' : ''}</span>
+                    </div>
+                    <div class="ad-actions">
+                        <button class="btn-icon edit" onclick="editAd('${ad.id}')" title="Edit">✏️</button>
+                        <button class="btn-icon delete" onclick="deleteAd('${ad.id}')" title="Delete">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdsPublic() {
+            const leftSidebar = document.getElementById('leftAdSidebar');
+            const rightSidebar = document.getElementById('rightAdSidebar');
+            if (!leftSidebar || !rightSidebar) return;
+
+            if (ads.length === 0) {
+                leftSidebar.innerHTML = '';
+                rightSidebar.innerHTML = '';
+                return;
+            }
+
+            // Split ads evenly: odd-indexed go left, even-indexed go right
+            const leftAds = ads.filter((_, i) => i % 2 === 0);
+            const rightAds = ads.filter((_, i) => i % 2 === 1);
+
+            function buildSidebarCards(adList) {
+                return adList.map((ad, idx) => `
+                    <div class="sidebar-ad-card" id="ad-card-${ad.id}" style="background:${ad.color}; animation-delay:${idx * 0.1}s;">
+                        <button class="sidebar-ad-dismiss" onclick="dismissAd('${ad.id}')" title="Dismiss">✕</button>
+                        ${ad.image
+                            ? `<img class="sidebar-ad-img" src="${ad.image}" alt="${ad.title}">`
+                            : `<div class="sidebar-ad-img-placeholder" style="background:${ad.color}">${ad.emoji}</div>`
+                        }
+                        <div class="sidebar-ad-body">
+                            <span class="ad-tag">Announcement</span>
+                            <h4>${ad.title}</h4>
+                            <p>${ad.desc}</p>
+                            <button class="ad-cta" onclick="expandAd('${ad.id}')">${ad.cta} →</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const labelHtml = '<div class="ad-sidebar-label">📢 Campus Ads</div>';
+            leftSidebar.innerHTML = leftAds.length > 0 ? labelHtml + buildSidebarCards(leftAds) : '';
+            rightSidebar.innerHTML = rightAds.length > 0 ? labelHtml + buildSidebarCards(rightAds) : '';
+        }
+
+        // ==================== AD EXPAND ====================
+        function expandAd(id) {
+            const ad = ads.find(a => a.id === id);
+            if (!ad) return;
+            const content = document.getElementById('adExpandContent');
+            const card = document.getElementById('adExpandCard');
+            card.style.background = ad.color;
+            content.innerHTML = `
+                ${ad.image
+                    ? `<img class="ad-expand-img" src="${ad.image}" alt="${ad.title}">`
+                    : `<div class="ad-expand-img-placeholder" style="background:${ad.color}">${ad.emoji}</div>`
+                }
+                <div class="ad-expand-body">
+                    <span class="ad-tag">Announcement</span>
+                    <h2>${ad.title}</h2>
+                    <p>${ad.desc}</p>
+                    <button class="ad-expand-cta" onclick="closeAdModal()">✕ Close</button>
+                </div>
+            `;
+            document.getElementById('adExpandModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdExpand(e) {
+            if (e.target === document.getElementById('adExpandModal')) closeAdModal();
+        }
+
+        function closeAdModal() {
+            document.getElementById('adExpandModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // ==================== INFO MODALS ====================
+        function openInfoModal(type) {
+            document.getElementById('modal-' + type).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeInfoModal(type, e) {
+            if (e && e.target !== document.getElementById('modal-' + type)) return;
+            document.getElementById('modal-' + type).classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        // ==================== SPLASH ====================
+        function enterSite() {
+            const splash = document.getElementById('splashPage');
+            if (!splash || splash.classList.contains('exiting')) return;
+            splash.classList.add('exiting');
+            setTimeout(() => {
+                splash.style.display = 'none';
+                showMainPage();
+            }, 400);
+        }
+
+        function updateCoverStats() {
+            const stats = getStats();
+            const tot = document.getElementById('coverStatTotal');
+            const res = document.getElementById('coverStatResolved');
+            const rate = document.getElementById('coverStatRate');
+            if (tot) tot.textContent = stats.total;
+            if (res) res.textContent = stats.resolved;
+            if (rate) rate.textContent = stats.resolutionRate + '%';
+        }
+
+        // ==================== PAGE INIT ====================
+        (function() {
+            // Hide all pages on load — splash is the entry point
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById('adminLoginBtn').classList.add('hidden');
+            loadAdsStorage();
+            renderAdsAdmin();
+            renderAdsPublic();
+            updateStats();
+            updateCoverStats();
+            renderComplaints();
+            // Set today as default incident date
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('incidentDate');
+            if (dateInput) dateInput.max = today;
+        })();
+
+    </script>
+
+    <!-- Terms of Use Modal -->
+    <div class="info-modal" id="modal-terms" onclick="closeInfoModal('terms', event)">
+        <div class="info-modal-box">
+            <div class="info-modal-header">
+                <div>
+                    <h2>📋 Terms of Use</h2>
+                    <p>Last updated: January 1, 2026</p>
+                </div>
+                <button class="info-modal-close" onclick="closeInfoModal('terms')">✕</button>
+            </div>
+            <div class="info-modal-body">
+                <h3>1. Acceptable Use</h3>
+                <p>By using Campus Voice, you agree to submit concerns in good faith and for legitimate campus improvement purposes only. This platform exists to bridge students and administration — please use it responsibly.</p>
+                <h3>2. Prohibited Content</h3>
+                <p>You must not submit false, misleading, or malicious reports. This includes fabricated incidents, targeted harassment of staff or students, or spam submissions. Misuse of the platform may result in disciplinary action under UC's student code of conduct.</p>
+                <h3>3. Content Review</h3>
+                <p>All submissions are subject to review by our moderation team. Campus Voice reserves the right to remove or withhold content that violates these terms or is deemed inappropriate, off-topic, or harmful.</p>
+                <h3>4. Anonymous Submissions</h3>
+                <p>While anonymous submissions are protected, they are still subject to these terms. Anonymity does not grant permission to submit malicious content.</p>
+                <h3>5. Changes to Terms</h3>
+                <p>These terms may be updated periodically. Continued use of the platform constitutes acceptance of the most current version.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
